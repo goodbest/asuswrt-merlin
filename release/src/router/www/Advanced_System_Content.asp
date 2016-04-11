@@ -399,7 +399,10 @@ function validForm(){
 		return false;
 	}	
 
-	if (HTTPS_support && (document.form.http_enable[0].selected != true) && !validator.range(document.form.https_lanport, 1, 65535) && !tmo_support)
+
+	/*if (!validator.range(document.form.http_lanport, 1, 65535))
+		return false;*/
+	if (HTTPS_support && !validator.range(document.form.https_lanport, 1, 65535) && !tmo_support)
 		return false;
 		
 	if (document.form.misc_http_x[0].checked) {
@@ -414,15 +417,15 @@ function validForm(){
 		document.form.misc_httpsport_x.value = '<% nvram_get("misc_httpsport_x"); %>';
 	}	
 
-	if(document.form.sshd_enable[0].checked){
-		if (!validator.range(document.form.sshd_port, 0, 65535))
+	if(document.form.sshd_enable.value != 0){
+		if (!validator.range(document.form.sshd_port, 1, 65535))
 			return false;
 	}
 	else{
 		document.form.sshd_port.disabled = true;
 	}
 
-	if((document.form.sshd_enable[0].checked) && (document.form.sshd_authkeys.value.length == 0) && (!document.form.sshd_pass[0].checked)){
+	if((document.form.sshd_enable.value != 0) && (document.form.sshd_authkeys.value.length == 0) && (!document.form.sshd_pass[0].checked)){
 		alert("You must configure at least one SSH authentication method!");
 		return false;
 	}
@@ -942,7 +945,7 @@ function clean_scorebar(obj){
 function check_sshd_enable(obj_value){
 	var state;
 
-	if (obj_value == 1)
+	if (obj_value != 0)
 		state = "";
 	else
 		state = "none";
@@ -1154,8 +1157,11 @@ function paste_password(){
 				<tr>
 					<th>Enable SSH</th>
 					<td>
-						<input type="radio" name="sshd_enable" class="input" onClick="check_sshd_enable(this.value);" value="1" <% nvram_match("sshd_enable", "1", "checked"); %>><#checkbox_Yes#>
-						<input type="radio" name="sshd_enable" class="input" onClick="check_sshd_enable(this.value);" value="0" <% nvram_match("sshd_enable", "0", "checked"); %>><#checkbox_No#>
+						<select name="sshd_enable" class="input_option" onchange="check_sshd_enable(this.value);">
+							<option value="0" <% nvram_match("sshd_enable", "0", "selected"); %>><#checkbox_No#></option>
+							<option value="1" <% nvram_match("sshd_enable", "1", "selected"); %>>LAN + WAN</option>
+							<option value="2" <% nvram_match("sshd_enable", "2", "selected"); %>>LAN only</option>
+						</select>
 					</td>
 				</tr>
 
@@ -1174,13 +1180,6 @@ function paste_password(){
 					</td>
 				</tr>
 
-				<tr id="remote_access_tr">
-					<th>Allow SSH access from WAN</th>
-					<td>
-						<input type="radio" name="sshd_wan" class="input" value="1" <% nvram_match("sshd_wan", "1", "checked"); %>><#checkbox_Yes#>
-						<input type="radio" name="sshd_wan" class="input" value="0" <% nvram_match("sshd_wan", "0", "checked"); %>><#checkbox_No#>
-					</td>
-				</tr>
 				<tr id="sshd_password_tr">
 					<th>Allow SSH password login</th>
 					<td>

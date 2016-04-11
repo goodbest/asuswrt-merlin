@@ -1,6 +1,6 @@
 include ../common.mak
 
-CFLAGS += -O3 -Wall $(EXTRACFLAGS)
+CFLAGS += -Os -Wall $(EXTRACFLAGS)
 CFLAGS += -I$(SRCBASE) -I$(SRCBASE)/include -I. -I$(TOP)/shared -I$(TOP)/zlib
 CFLAGS += -I$(TOP)/push_log
 CFLAGS += -DASUS_DDNS -DTRANSLATE_ON_FLY -DFLASH_EMULATOR -DLinux -DWSC 
@@ -85,6 +85,8 @@ endif
 ifeq ($(RTCONFIG_HTTPS),y)
 OBJS += pwenc.o
 endif
+
+OBJS += $(if $(wildcard web_hook.c), web_hook.o, prebuild/web_hook$(BCMEX).o)
 
 LIBS = -L$(TOP)/nvram${BCMEX} -lnvram -L$(TOP)/shared -lshared
 # for ceil()
@@ -202,6 +204,8 @@ ifeq ($(RTCONFIG_HTTPS),y)
 pwenc.o:
 	@-cp -f ./prebuild/pwenc$(BCMEX).o pwenc.o
 endif
+web_hook.o:
+	@-cp -f ./prebuild/web_hook$(BCMEX).o web_hook.o
 endif
 
 %.o: %.c .%.depend

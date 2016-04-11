@@ -1246,6 +1246,7 @@ CONFIG_UNIX98_PTYS=y
 # CONFIG_TCG_TPM is not set
 CONFIG_DEVPORT=y
 # CONFIG_RAMOOPS is not set
+# CONFIG_BMOCA is not set
 # CONFIG_I2C is not set
 # CONFIG_SPI is not set
 
